@@ -21,8 +21,14 @@ class DeckHome extends Component {
     navigation.navigate('DeckList');
   }
 
+  goToAddCard = () => {
+    const { navigation } = this.props;
+    navigation.navigate('AddCard');
+  }
+
   render() {  
     const { selectedDeck } = this.props;
+    console.log('DECK SELECIONADO = ', selectedDeck)
     return (
       <View style={styles.container}>        
         <Header
@@ -53,7 +59,7 @@ class DeckHome extends Component {
         </View>
         <View style={{ flex: 1, justifyContent: 'flex-end', alignItems: 'center'}}>          
 
-          <TouchableOpacity style={styles.transparentButton} >              
+          <TouchableOpacity style={styles.transparentButton} onPress={this.goToAddCard} >              
             <Text>Add Card</Text>            
           </TouchableOpacity>                       
 

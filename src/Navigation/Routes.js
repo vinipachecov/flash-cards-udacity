@@ -4,11 +4,15 @@ import { Icon } from 'native-base';
 import DeckList from '../screens/DeckList';
 import newDeck from '../screens/newDeck';
 import DeckHome from '../screens/DeckHome';
+import AddCard from '../screens/AddCard';
 
 
 deckStack = createStackNavigator({
   DeckHome: {
-    screen: DeckHome
+    screen: DeckHome,    
+  },
+  AddCard: {
+    screen: AddCard
   }
 },
 {

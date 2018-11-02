@@ -4,9 +4,12 @@ import { connect } from 'react-redux';
 import { NavigationActions } from 'react-navigation';
 import { Item, Input, Button } from 'native-base';
 import { AsyncStorageKey } from '../../utils/keys';
-import { addDeck } from '../../actions/deckActions';
+import { addDeck, addCardToDeck } from '../../actions/deckActions';
+import { createguid } from '../../utils/helpers';
 
 class newDeck extends Component {  
+
+  
 
   state = {
     deckName: ''
@@ -21,12 +24,15 @@ class newDeck extends Component {
 
   createNewDeck = async () => {
     const { deckName } = this.state;
-    const { navigation, decks } = this.props;
+    const { navigation, decks } = this.props;    
     const newDeck = {
+      id: createguid(),
       title: deckName,
       questions: [],       
     }
+    console.log('new deck = ', newDeck);
     await this.props.addDeck(newDeck, decks);    
+    this.setState({ deckName: '' });
     navigation.goBack();
   }
 
@@ -42,8 +48,7 @@ class newDeck extends Component {
           <Input 
             value={deckName}
             onChangeText={text => this.onDeckNameChange(text)}
-            placeholder='New Deck.' 
-            underlineColorAndroid    
+            placeholder='New Deck.'              
             placeholderTextColor={'lightgray'}       
             autoCorrect={false}
           />
@@ -90,7 +95,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = {
-  addDeck  
+  addDeck,  
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(newDeck);

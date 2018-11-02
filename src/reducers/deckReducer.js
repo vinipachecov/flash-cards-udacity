@@ -1,7 +1,8 @@
 import { 
   SEND_NEW_DECK,
   RETRIEVE_DECKS,
-  SELECTED_DECK
+  SELECTED_DECK,
+  ADD_CARD_TO_DECK
  } from "../actions/ActionTypes";
 
 const initialState = {
@@ -18,6 +19,12 @@ export default (state = initialState, action) => {
     return { ...state, decks: action.payload };
   case SELECTED_DECK:
     return { ...state, selectedDeck: action.payload };
+  case ADD_CARD_TO_DECK: 
+    return { 
+      ...state, 
+      decks: action.payload.newDeckList, 
+      selectedDeck: action.payload.deckWithAddedCard 
+    };
   default:
     return state
   }

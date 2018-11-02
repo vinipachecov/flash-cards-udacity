@@ -13,6 +13,7 @@ import { connect } from 'react-redux';
 import DeckListItem from '../../components/DeckListItem';
 import ListSeparator from '../../components/ListSeparator';
 import { retrieveDecks, selectDeck } from '../../actions/deckActions';
+import { AsyncStorageKey } from '../../utils/keys';
 
 
 const fakeData = [
@@ -47,18 +48,17 @@ class DeckList extends Component {
   async componentDidMount() {
     try {
       this.setState({ loading: true });
-    // AsyncStorage.clear(); 
+    AsyncStorage.clear(); 
     // fetch all keys to get the decks
-    const keys = await AsyncStorage.getAllKeys();
-    // get all decks
-    let decks = [];
-    for (const key of keys) {
-      const data = await AsyncStorage.getItem(key);            
-      decks.push(JSON.parse(data));
-    }    
-    this.props.retrieveDecks(...decks);                
+    // await AsyncStorage.clear();
+    let data = await AsyncStorage.getItem(AsyncStorageKey);            
+     data = JSON.parse(data);    
+    this.props.retrieveDecks(Object.keys(data).map(key => {
+      return data[key];       
+    }));                
     this.setState({ loading: false });      
     } catch (error) {      
+      console.log(error);
       this.setState({ loading: false });            
     }    
   }
@@ -86,7 +86,7 @@ class DeckList extends Component {
                 data={item}              
               />
           }
-          keyExtractor={item => item.title}
+          keyExtractor={item => item.id}
           />                                  
         :
         this.renderEmptyList()
