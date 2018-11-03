@@ -9,7 +9,7 @@ import {
   Platform
  } from 'react-native';
 import { connect } from 'react-redux';
-import { Button, Header, Icon, Body, Left, Title, Container } from 'native-base';
+import { Button, Header, Icon, Body, Left, Title, Container, Toast, Root } from 'native-base';
 import { NavigationActions, StackActions } from 'react-navigation';
 import { darkBlue, white } from '../../utils/colors';
 
@@ -26,10 +26,24 @@ class DeckHome extends Component {
     navigation.navigate('AddCard');
   }
 
+  goToQuizz = () => {
+    const { navigation, selectedDeck } = this.props;    
+    if (selectedDeck.questions.length > 0) {
+      navigation.navigate('QuizScreen');
+    } else {
+      Toast.show({
+        text: "You don't have any cards yet, add one beofre going to a quizz!",
+        buttonText: 'Ok!',
+        duration: 3000
+      });
+    }
+  }
+
   render() {  
     const { selectedDeck } = this.props;
     console.log('DECK SELECIONADO = ', selectedDeck)
     return (
+      <Root>
       <View style={styles.container}>        
         <Header
           style={{ backgroundColor: darkBlue, elevation: 0 }}
@@ -65,22 +79,22 @@ class DeckHome extends Component {
 
           {
             Platform.OS === 'ios' ?
-            <TouchableOpacity>
+            <TouchableOpacity onPress={this.goToQuizz}>
               <View>
                 <Text>Start Quizz</Text>
               </View>              
             </TouchableOpacity>
             :
-            <TouchableNativeFeedback >              
+            <TouchableNativeFeedback onPress={this.goToQuizz} >              
               <View style={styles.androidButton}>
                 <Text style={{ color: white }}>Start Quizz</Text>
               </View>                
             </TouchableNativeFeedback>
           }
           
-        </View>
-
+        </View>        
       </View>
+      </Root>
     );
   }
 }
@@ -99,6 +113,7 @@ const styles = StyleSheet.create({
     height: 40,
     justifyContent: 'center',
     alignItems: 'center',
+    marginBottom: 60,
   },
   transparentButton: {    
     backgroundColor: white, 

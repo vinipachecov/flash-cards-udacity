@@ -1,0 +1,2 @@
+This is my personal code for the last project for the Udacity React Nanodegree. It is a flash cards native app using React-Native and AsyncStorage for saving users flash cards data.
+It is a educational purpouse app designed to help people keep in mind certain key points in a specific topic.

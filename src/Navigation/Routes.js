@@ -5,9 +5,13 @@ import DeckList from '../screens/DeckList';
 import newDeck from '../screens/newDeck';
 import DeckHome from '../screens/DeckHome';
 import AddCard from '../screens/AddCard';
+import QuizScreen from '../screens/Quiz';
 
 
 deckStack = createStackNavigator({
+  QuizScreen: {
+    screen: QuizScreen
+  },
   DeckHome: {
     screen: DeckHome,    
   },

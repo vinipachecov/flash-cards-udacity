@@ -48,7 +48,7 @@ class DeckList extends Component {
   async componentDidMount() {
     try {
       this.setState({ loading: true });
-    AsyncStorage.clear(); 
+    // AsyncStorage.clear(); 
     // fetch all keys to get the decks
     // await AsyncStorage.clear();
     let data = await AsyncStorage.getItem(AsyncStorageKey);            

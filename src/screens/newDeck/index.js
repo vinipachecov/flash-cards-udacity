@@ -51,6 +51,7 @@ class newDeck extends Component {
             placeholder='New Deck.'              
             placeholderTextColor={'lightgray'}       
             autoCorrect={false}
+            onSubmitEditing={this.createNewDeck}
           />
         </Item>
 
