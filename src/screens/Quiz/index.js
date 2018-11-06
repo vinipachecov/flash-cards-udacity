@@ -2,10 +2,7 @@ import React, { Component } from 'react'
 import { View, Text } from 'react-native'
 import { Header, Container, Left, Icon, Right, Body, Title, Button } from 'native-base';
 import { connect } from 'react-redux'
-import { Notifications } from 'expo';
 import { darkBlue, white } from '../../utils/colors';
-import { NOTIFICATION_KEY, setLocalNotification } from '../../utils/helpers';
-import { AsyncStorageKey } from '../../utils/keys';
 
 class QuizScreen extends Component {  
 
@@ -19,7 +16,7 @@ class QuizScreen extends Component {
    * Change view to the answer
    */
   switchType = (type) => {
-    this.setState({ type});
+    this.setState({ type });
   }
 
   onAnswerReceived = (answer) => {    
@@ -42,7 +39,7 @@ class QuizScreen extends Component {
   }
 
   onNavigateBack = () => {    
-    const { navigation } = this.props;
+    const  { navigation } = this.props;
     this.setState({ 
       type: 'question',
       correctAnswersCounter: 0,
@@ -65,7 +62,7 @@ class QuizScreen extends Component {
     if (questionCounter < selectedDeck.questions.length) {
       return ( 
       <View style={{ flex: 1 }}>
-        <Text style={{ textAlign: 'center', fontSize: 25, marginLeft: 20, marginVertical: 40 }}>
+        <Text style={styles.questionOrAnswerText}>
         {
             type === 'question' ?                 
           selectedDeck.questions[questionCounter].question
@@ -75,7 +72,7 @@ class QuizScreen extends Component {
         </Text>
         <Button 
           onPress={() => this.switchType(type === 'question' ? 'answer' : 'question')}
-          style={{ alignSelf: 'center', backgroundColor: darkBlue, paddingHorizontal: 20 }}              
+          style={styles.switchButton}              
         >
           <Text style={{ color: white }}>
           {
@@ -96,14 +93,14 @@ class QuizScreen extends Component {
       setLocalNotification();
 
       return (
-        <View style={{ flex: 1, alignItems: 'center' }}>          
+        <View style={styles.finishedContainer}>          
           <Text>Finished Quiz!</Text>
           <Button
             onPress={this.onRestartQuiz}
             transparent
             bordered
             full
-            style={{ borderColor: darkBlue, marginHorizontal: 40 , marginTop: 60, marginBottom: 20 }}
+            style={styles.restartButton}
           >
             <Text 
               style={{ color: darkBlue }}
@@ -115,7 +112,7 @@ class QuizScreen extends Component {
           <Button
             onPress={this.onNavigateBack}
             full
-            style={{ backgroundColor: darkBlue, marginHorizontal: 40 }}
+            style={styles.goBackButton}
           >
             <Text style={{ color: white }}>
               Back to Deck
@@ -142,7 +139,7 @@ class QuizScreen extends Component {
               onPress={this.onNavigateBack}
             >
               <Icon 
-              style={{ color: white }}
+                style={styles.HeaderLeftIcon}
                 name={'arrow-back'}
               />
             </Button>
@@ -153,10 +150,10 @@ class QuizScreen extends Component {
               Quiz
             </Title>
           </Body>
-          <Right/>
+          <Right />
         </Header>
         {/* card Counter / Points counter */}
-        <View style={{ width: '100%', alignItems: 'flex-start' }}>
+        <View style={styles.cardCounterContainer}>
           <Text style={{ marginLeft: 20 }}>{
             questionCounter < selectedDeck.questions.length ?
             questionCounter + 1
@@ -170,22 +167,22 @@ class QuizScreen extends Component {
         {this.onRenderQuizz()}  
         {
           questionCounter < selectedDeck.questions.length ?
-          <View style={{ flex: 1, justifyContent: 'flex-end' }}>
+          <View style={styles.questionContainer}>
             <Button              
               success
               full
-              style={{ marginHorizontal: 40}}
+              style={styles.buttonStyle}
               onPress={() => this.onAnswerReceived('CORRECT')}
             > 
-              <Text style={{ color: 'white', alignSelf: 'center'}}>Correct</Text>             
+              <Text style={styles.buttonText}>Correct</Text>             
             </Button>
             <Button              
               danger
               full
-              style={{ marginBottom: 60, marginTop: 20, marginHorizontal: 40 }}              
+              style={[styles.buttonStyle, styles.bottomButtonStyle]}              
               onPress={() => this.onAnswerReceived('INCORRECT')}
             >
-              <Text style={{ color: 'white', alignSelf: 'center'}}>Incorrect</Text>              
+              <Text style={styles.buttonText}>Incorrect</Text>              
             </Button>                 
 
         </View>
@@ -194,17 +191,65 @@ class QuizScreen extends Component {
         }
           
       </Container>
-    )
+    );
   }
 }
 
-const mapStateToProps = (state) => ({
-  selectedDeck: state.deckData.selectedDeck
-  
-})
+const styles = {
+  finishedContainer: { 
+    flex: 1, 
+    alignItems: 'center' 
+  },
+  HeaderLeftIcon: { 
+    color: white 
+  },
+  cardCounterContainer: { 
+    width: '100%', 
+    alignItems: 'flex-start' 
+  },
+  questionContainer: { 
+    flex: 1,
+    justifyContent: 'flex-end' 
+  },
+  buttonStyle: { 
+    marginHorizontal: 40
+  },
+  bottomButtonStyle: { 
+    marginBottom: 60, 
+    marginTop: 20
+  },
+  restartButton: { 
+    borderColor: darkBlue, 
+    marginHorizontal: 40, 
+    marginTop: 60, 
+    marginBottom: 20 
+  },
+  switchButton: { 
+    alignSelf: 'center', 
+    backgroundColor: darkBlue, 
+    paddingHorizontal: 20 
+  },
+  questionOrAnswerText: { 
+    textAlign: 'center',
+    fontSize: 25,
+    marginLeft: 20,
+    marginVertical: 40
+  },
+  goBackButton: {
+    backgroundColor: darkBlue,
+    marginHorizontal: 40 
+  },
+  buttonText: { 
+    color: 'white', 
+    alignSelf: 'center'
+  }
+};
 
-const mapDispatchToProps = {
-  
-}
+const mapStateToProps = (state) => ({
+  selectedDeck: state.deckData.selectedDeck  
+});
+
+const mapDispatchToProps = {  
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(QuizScreen)
