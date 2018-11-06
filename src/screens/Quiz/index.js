@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
-import { View, Text } from 'react-native'
+import { View, Text, AsyncStorage } from 'react-native'
 import { Header, Container, Left, Icon, Right, Body, Title, Button } from 'native-base';
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
+import { Notifications } from 'expo';
 import { darkBlue, white } from '../../utils/colors';
+import { NOTIFICATION_KEY, setLocalNotification } from '../../utils/helpers';
 
 class QuizScreen extends Component {  
 
@@ -88,7 +90,7 @@ class QuizScreen extends Component {
     } else {      
       // Finished the cards QUIZZ
       // clear all notifications
-      await AsyncStorageKey.removeItem(NOTIFICATION_KEY);
+      await AsyncStorage.removeItem(NOTIFICATION_KEY);
       Notifications.cancelAllScheduledNotificationsAsync();
       setLocalNotification();
 

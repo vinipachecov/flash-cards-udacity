@@ -79,7 +79,7 @@ class DeckHome extends Component {
 
           {
             Platform.OS === 'ios' ?
-            <TouchableOpacity onPress={this.goToQuizz}>
+            <TouchableOpacity onPress={this.goToQuizz} style={styles.iosButton}>
               <View>
                 <Text>Start Quizz</Text>
               </View>              
@@ -108,6 +108,15 @@ const styles = StyleSheet.create({
   androidButton: {
     marginVertical: 10,
     backgroundColor: darkBlue, 
+    width: '50%', 
+    borderRadius: 3, 
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 60,
+  },
+  iosButton: {
+    marginVertical: 10,    
     width: '50%', 
     borderRadius: 3, 
     height: 40,
