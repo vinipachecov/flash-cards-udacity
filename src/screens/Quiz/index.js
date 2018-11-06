@@ -134,6 +134,7 @@ class QuizScreen extends Component {
         <Header
           style={{ backgroundColor: darkBlue }}
           androidStatusBarColor={darkBlue}
+          iosBarStyle={'light-content'}
         >
           <Left>
             <Button

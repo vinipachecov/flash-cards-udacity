@@ -2,15 +2,13 @@ import React, { Component } from 'react';
 import { 
   View, 
   Text, 
-  StyleSheet, 
-  StatusBar, 
+  StyleSheet,   
   TouchableOpacity, 
   TouchableNativeFeedback,
   Platform
  } from 'react-native';
 import { connect } from 'react-redux';
-import { Button, Header, Icon, Body, Left, Title, Container, Toast, Root } from 'native-base';
-import { NavigationActions, StackActions } from 'react-navigation';
+import { Button, Header, Icon, Body, Left, Title, Toast, Root, Right } from 'native-base';
 import { darkBlue, white } from '../../utils/colors';
 
 class DeckHome extends Component {     
@@ -48,6 +46,7 @@ class DeckHome extends Component {
         <Header
           style={{ backgroundColor: darkBlue, elevation: 0 }}
           androidStatusBarColor={darkBlue}
+          iosBarStyle={'light-content'}
         >
           <Left>
             <Button
@@ -56,22 +55,24 @@ class DeckHome extends Component {
             >
               <Icon
                 name={'arrow-back'}
+                style={styles.arrowBack}
               />
             </Button>            
           </Left>
           <Body>
-            <Title>{selectedDeck.title}</Title>
+            <Title style={styles.titleText}>{selectedDeck.title}</Title>
           </Body>
+          <Right />
         </Header>
-        <View style={{ flex: 1, justifyContent: "flex-end", alignItems: 'center'}}>        
-          <Text style={{ textAlign: 'center', fontSize: 30 }}>
+        <View style={styles.headerText}>        
+          <Text style={styles.selectedDeckStyle}>
           {selectedDeck.title}{'\n'}
-          <Text style={{ fontSize: 20, color: 'gray' }}>{selectedDeck.questions.length} cards</Text>         
+          <Text style={styles.cardCounterStyle}>{selectedDeck.questions.length} cards</Text>         
           </Text>
           
         
         </View>
-        <View style={{ flex: 1, justifyContent: 'flex-end', alignItems: 'center'}}>          
+        <View style={styles.bottomButtonsStyle}>          
 
           <TouchableOpacity style={styles.transparentButton} onPress={this.goToAddCard} >              
             <Text>Add Card</Text>            
@@ -101,6 +102,30 @@ class DeckHome extends Component {
 
 
 const styles = StyleSheet.create({
+  arrowBack: {
+    color: Platform.OS === 'ios' ? 'white' : null
+  },
+  titleText: {
+    color: Platform.OS === 'ios' ? 'white' : null
+  },
+  bottomButtonsStyle: { 
+    flex: 1, 
+    justifyContent: 'flex-end', 
+    alignItems: 'center'
+  },
+  cardCounterStyle: { 
+    fontSize: 20, 
+    color: 'gray' 
+  },
+  selectedDeckStyle: { 
+    textAlign: 'center', 
+    fontSize: 30 
+  },
+  headerText: { 
+    flex: 1, 
+    justifyContent: "flex-end", 
+    alignItems: 'center'
+  },
   container: {
     flex: 1,
     backgroundColor: '#fff',    
