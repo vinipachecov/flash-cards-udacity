@@ -9,7 +9,7 @@ run this project.
 
 Open an android or ios emulator with in your computer.
 
--- Hint
+## Hint
 
 For android you can check your emulators available by checking your AVD Manager in
 Android Studio or by typing:
