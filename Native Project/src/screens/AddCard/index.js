@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { 
   View, 
   Text, 
+  StyleSheet,
   Platform, 
   TouchableNativeFeedback, 
   TouchableOpacity,
@@ -80,7 +81,7 @@ class AddCard extends Component {
         </Header>
         
           <TextInput
-            style={{ alignSelf: 'center', borderRadius: 3, borderColor: darkBlue, borderWidth: 1, marginVertical: 20, width: '80%', }}
+            style={styles.textInput}
             value={questionText}
             onChangeText={this.onQuestionTextChange}
             placeholder={'Is React-Native awesome?'}              
@@ -90,7 +91,7 @@ class AddCard extends Component {
 
 
           <TextInput
-            style={{ alignSelf: 'center', borderRadius: 3, borderColor: darkBlue, borderWidth: 1, marginVertical: 20, width: '80%', }}
+            style={styles.textInput}
             value={answerText}
             onChangeText={this.onAnswerTextChange}
             placeholder={'Do you have any doubts?!'}              
@@ -101,7 +102,7 @@ class AddCard extends Component {
           {
             Platform.os === 'ios' ?
             <TouchableOpacity  
-              style={{ alignSelf: 'center', width: '40%', height: 40 }}
+              style={styles.iosButton}
               onPress={this.addQuestion}
               >
               <Text style={{ color: darkBlue }}>Submit</Text>
@@ -110,16 +111,7 @@ class AddCard extends Component {
             <TouchableNativeFeedback
               onPress={this.addQuestion}
             >
-              <View style={{ 
-                width: '40%', 
-                alignSelf: 'center', 
-                backgroundColor: darkBlue, 
-                height: 40, 
-                alignItems: 'center', 
-                justifyContent: 'center',
-                marginVertical: 20,
-                borderRadius: 3 
-                }}>
+              <View style={styles.androidButton}>
                 <Text style={{ color: white }}>Submit</Text>
               </View>              
             </TouchableNativeFeedback>
@@ -129,6 +121,32 @@ class AddCard extends Component {
     )
   }
 }
+
+const styles = StyleSheet.create({
+  textInput: { 
+    alignSelf: 'center', 
+    borderRadius: 3, 
+    borderColor: darkBlue, 
+    borderWidth: 1, 
+    marginVertical: 20, 
+    width: '80%'
+  },
+  iosButton: { 
+    alignSelf: 'center', 
+    width: '40%', 
+    height: 40 
+  },
+  androidButton: { 
+    width: '40%', 
+    alignSelf: 'center', 
+    backgroundColor: darkBlue, 
+    height: 40, 
+    alignItems: 'center', 
+    justifyContent: 'center',
+    marginVertical: 20,
+    borderRadius: 3 
+  }
+});
 
 const mapStateToProps = (state) => ({
   selectedDeck: state.deckData.selectedDeck,

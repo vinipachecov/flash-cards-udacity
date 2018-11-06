@@ -1,15 +1,11 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, AsyncStorage, FlatList, TextInput,KeyboardAvoidingView } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
-import { NavigationActions } from 'react-navigation';
 import { Item, Input, Button } from 'native-base';
-import { AsyncStorageKey } from '../../utils/keys';
-import { addDeck, addCardToDeck } from '../../actions/deckActions';
+import { addDeck  } from '../../actions/deckActions';
 import { createguid } from '../../utils/helpers';
 
 class newDeck extends Component {  
-
-  
 
   state = {
     deckName: ''
@@ -40,11 +36,10 @@ class newDeck extends Component {
     const { deckName } = this.state;
     return (
       <View style={styles.container}>        
-
         <Text style={styles.title}>
           What is the title{'\n'} of your new{'\n'} Deck?
         </Text>        
-        <Item regular style={{ borderRadius: 3, marginVertical: 20, width: '80%', }}>
+        <Item regular style={styles.textInput}>
           <Input 
             value={deckName}
             onChangeText={text => this.onDeckNameChange(text)}
@@ -77,6 +72,11 @@ const styles = StyleSheet.create({
     fontSize: 40,
     color: 'black',
     textAlign: 'center'
+  },
+  textInput: { 
+    borderRadius: 3,
+    marginVertical: 20, 
+    width: '80%'
   },
   input: {
     width: '90%',

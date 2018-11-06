@@ -3,11 +3,9 @@ import {
   View, 
   Text, 
   FlatList, 
-  StyleSheet, 
-  AsyncStorage, 
-  StatusBar, 
-  Platform,
-  ActivityIndicator 
+  StyleSheet,   
+  AsyncStorage,
+  Platform,  
 } from 'react-native';
 import { connect } from 'react-redux';
 import DeckListItem from '../../components/DeckListItem';
@@ -15,23 +13,6 @@ import ListSeparator from '../../components/ListSeparator';
 import { retrieveDecks, selectDeck } from '../../actions/deckActions';
 import { AsyncStorageKey } from '../../utils/keys';
 
-
-const fakeData = [
-  {
-    title: 'React',
-    nCards: 10,
-    backgroundColor: 'red'
-  },
-  {
-    title: 'Redux',
-    nCards: 10,
-    backgroundColor: 'blue'
-  },
-  {
-    title: 'Udacity',
-    nCards: 10,
-    backgroundColor: 'brown'
-  }];
 class DeckList extends Component {
   
   state = {
@@ -39,7 +20,7 @@ class DeckList extends Component {
   }
 
   navigateToDeck = (deck) => {    
-    const { selectDeck, navigation } = this.props
+    const { selectDeck, navigation } = this.props;
     //Select Deck
     selectDeck(deck);
     navigation.navigate('DeckHome' );
@@ -65,7 +46,7 @@ class DeckList extends Component {
 
   renderEmptyList = () => {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+      <View style={styles.emptyListStyle}>
         <Text>No decks available, create a new one! :)</Text>
       </View>
     )
@@ -97,6 +78,11 @@ class DeckList extends Component {
 }
 
 const styles = StyleSheet.create({
+  emptyListStyle: { 
+    flex: 1, 
+    justifyContent: 'center', 
+    alignItems: 'center'
+  },
   container: {
     marginTop: Platform.OS === 'ios' ? 22 : 0,
     flex: 1,
