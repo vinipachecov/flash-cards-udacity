@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Platform, ToastAndroid } from 'react-native';
 import { connect } from 'react-redux';
-import { Item, Input, Button } from 'native-base';
+import { Item, Input, Button, Toast, Root } from 'native-base';
 import { addDeck, selectDeck } from '../../actions/deckActions';
 import { createguid } from '../../utils/helpers';
 
 class newDeck extends Component {  
-
-  
 
   state = {
     deckName: ''
@@ -22,22 +20,34 @@ class newDeck extends Component {
 
   createNewDeck = async () => {
     const { deckName } = this.state;
-    const { navigation, decks } = this.props;    
-    const newDeck = {
-      id: createguid(),
-      title: deckName,
-      questions: []            
-    };        
-    this.setState({ deckName: '' });    
-    console.log('new deck = ', newDeck);
-    await this.props.addDeck(newDeck, decks);    
-    this.props.selectDeck(newDeck);
-    navigation.navigate('DeckHome');        
+    const { navigation } = this.props;    
+    if (deckName !== '' || deckName.trim() !== '') {
+      const newDeck = {
+        id: createguid(),
+        title: deckName,
+        questions: []            
+      };        
+      this.setState({ deckName: '' });          
+      await this.props.addDeck(newDeck);    
+      this.props.selectDeck(newDeck);
+      console.log('depois de selecionar deck');
+      navigation.navigate('DeckHome');        
+    } else {      
+      if (Platform.OS === 'ios') {
+        Toast.show({
+          text: 'Digite um nome para o seu deck!',
+          position: 'top'
+        });
+      } else {
+        ToastAndroid.show('Digite um nome para o seu deck!', ToastAndroid.SHORT); 
+      }
+    }     
   }
 
   render() {
     const { deckName } = this.state;
     return (
+      <Root>
       <View style={styles.container}>        
 
         <Text style={styles.title}>
@@ -60,6 +70,7 @@ class newDeck extends Component {
           <Text style={{ color: 'white'}}>Submit</Text>
         </Button>        
       </View>
+    </Root>
     );
   }
 }

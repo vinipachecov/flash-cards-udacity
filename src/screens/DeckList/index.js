@@ -23,16 +23,17 @@ class DeckList extends Component {
     const { selectDeck, navigation } = this.props;
     //Select Deck
     selectDeck(deck);
-    navigation.navigate('DeckHome' );
+    navigation.navigate('DeckHome');
   }
 
   async componentDidMount() {
     try {
       this.setState({ loading: true });    
     // fetch all keys to get the decks    
-    let data = await AsyncStorage.getItem(AsyncStorageKey);            
-     data = JSON.parse(data);    
-    this.props.retrieveDecks(Object.keys(data).map(key => {
+    // await AsyncStorage.clear()
+    let data = await AsyncStorage.getItem(AsyncStorageKey);
+    data = JSON.parse(data);
+    this.props.retrieveDecks(Object.keys(data).map(key => {      
       return data[key];       
     }));                
     this.setState({ loading: false });      
@@ -69,7 +70,7 @@ class DeckList extends Component {
           />                                  
         :
         this.renderEmptyList()
-        }         
+        }            
       </View>
     );
   }

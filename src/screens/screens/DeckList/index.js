@@ -49,12 +49,12 @@ class DeckList extends Component {
       <View style={styles.emptyListStyle}>
         <Text>No decks available, create a new one! :)</Text>
       </View>
-    )
+    );
   }
 
   render() {    
     const { decks } = this.props;    
-    console.log('dados = ', decks);
+    // console.log('dados = ', decks);
     return (      
       <View style={styles.container}>        
         { decks.length > 0  ?

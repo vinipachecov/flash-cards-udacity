@@ -22,10 +22,12 @@ export default (state = initialState, action) => {
   case ADD_CARD_TO_DECK: 
     return { 
       ...state, 
-      decks: action.payload.newDeckList, 
-      selectedDeck: action.payload.deckWithAddedCard 
+      decks: [...state.decks].map(deck => {
+        return deck.id === action.payload.id ? action.payload : deck;
+      }), 
+      selectedDeck: action.payload 
     };
   default:
-    return state
+    return state;
   }
 };

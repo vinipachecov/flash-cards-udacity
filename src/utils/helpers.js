@@ -1,6 +1,7 @@
 import { AsyncStorage } from 'react-native';
 import { Notifications, Permissions } from 'expo'; 
-const NOTIFICATION_KEY = 'flashCards:notifications';
+
+export const NOTIFICATION_KEY = 'flashCards:notifications';
 
 
 export const createguid = () => {
@@ -10,12 +11,12 @@ export const createguid = () => {
       .substring(1);
   }
   return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-}
+};
 
 
 export function clearLocalNotification() {
-  return AsyncStorage.removeItem(NOTIFICATION_KEY).
-    then(Notifications.cancelAllScheduledNotificationsAsync)
+  return AsyncStorage.removeItem(NOTIFICATION_KEY)
+  .then(Notifications.cancelAllScheduledNotificationsAsync);
 }
 
  
@@ -32,7 +33,7 @@ export function createNotification() {
       sticky: false,
       vibrate: true
     }
-  }
+  };
 }
 
 export function setLocalNotification() {
@@ -56,11 +57,11 @@ export function setLocalNotification() {
                   time: tomorrow,
                   repeat: 'day'
                 }
-              )
+              );
 
               AsyncStorage.setItem(NOTIFICATION_KEY, JSON.stringify(true))
             }
-          })
+          });
       }
-    })
-}
+    });
+};

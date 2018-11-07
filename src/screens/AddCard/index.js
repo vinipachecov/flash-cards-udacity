@@ -30,7 +30,7 @@ class AddCard extends Component {
   }
 
   addQuestion = async () => {
-    const { selectedDeck, decks } = this.props;
+    const { selectedDeck } = this.props;
     const { questionText, answerText } = this.state;
     
     const newQuestion = {
@@ -38,11 +38,10 @@ class AddCard extends Component {
       question: questionText,
       answer: answerText
     };    
-    
 
     const currentDeck = { ...selectedDeck };   
-    currentDeck.questions.push(newQuestion);
-    await this.props.addCardToDeck(decks, currentDeck);
+    currentDeck.questions.push(newQuestion);    
+    await this.props.addCardToDeck(currentDeck);
     this.props.navigation.goBack();
   }
 

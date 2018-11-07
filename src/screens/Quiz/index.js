@@ -4,7 +4,7 @@ import { Header, Container, Left, Icon, Right, Body, Title, Button } from 'nativ
 import { connect } from 'react-redux';
 import { Notifications } from 'expo';
 import { darkBlue, white } from '../../utils/colors';
-import { NOTIFICATION_KEY, setLocalNotification } from '../../utils/helpers';
+import { NOTIFICATION_KEY, setLocalNotification, clearLocalNotification } from '../../utils/helpers';
 
 class QuizScreen extends Component {  
 
@@ -23,7 +23,6 @@ class QuizScreen extends Component {
 
   onAnswerReceived = (answer) => {    
     const { correctAnswersCounter, questionCounter } = this.state;
-
     switch (answer) {
       case 'CORRECT': 
         // Correct answer code
@@ -37,6 +36,10 @@ class QuizScreen extends Component {
           questionCounter: questionCounter + 1  
         });
         break;
+      default:
+        this.setState({           
+          questionCounter: questionCounter + 1  
+        });        
     }
   }
 
@@ -58,11 +61,15 @@ class QuizScreen extends Component {
     });
   }
 
-  onRenderQuizz = async () => {
+  onRenderQuizz = () => {        
     const { selectedDeck } = this.props;
     const { questionCounter, type } = this.state;
-    if (questionCounter < selectedDeck.questions.length) {
-      return ( 
+    
+    console.log('DECK SELECIONADO = ', selectedDeck);
+    console.log('TAMANHO DO VETOR = ', selectedDeck.questions.length);
+    console.log('QUESTION COUNTER = ', questionCounter);
+    if (questionCounter < selectedDeck.questions.length) {      
+          return (         
       <View style={{ flex: 1 }}>
         <Text style={styles.questionOrAnswerText}>
         {
@@ -86,13 +93,12 @@ class QuizScreen extends Component {
           </Text>
         </Button>
       </View>          
-      )            
+      );            
     } else {      
-      // Finished the cards QUIZZ
-      // clear all notifications
-      await AsyncStorage.removeItem(NOTIFICATION_KEY);
-      Notifications.cancelAllScheduledNotificationsAsync();
-      setLocalNotification();
+    //   // Finished the cards QUIZZ
+    //   // clear all notifications
+    clearLocalNotification().then(setLocalNotification);
+    Notifications.cancelAllScheduledNotificationsAsync();
 
       return (
         <View style={styles.finishedContainer}>          
@@ -149,7 +155,7 @@ class QuizScreen extends Component {
 
           </Left>
           <Body>
-            <Title>
+            <Title style={styles.HeaderLeftIcon}>
               Quiz
             </Title>
           </Body>
@@ -234,6 +240,7 @@ const styles = {
   },
   questionOrAnswerText: { 
     textAlign: 'center',
+    color: 'black',
     fontSize: 25,
     marginLeft: 20,
     marginVertical: 40
