@@ -48,10 +48,9 @@ export const selectDeck = (deck) => ({
 });
 
 export const addCardToDeck = (deckWithAddedCard) => {
-  return async dispatch => {
-    console.log('deck com card adicionado = ', deckWithAddedCard)              
+  return async dispatch => {    
     try {        
-      const res = await AsyncStorage.mergeItem(AsyncStorageKey, JSON.stringify({
+      await AsyncStorage.mergeItem(AsyncStorageKey, JSON.stringify({
         [deckWithAddedCard.id]: deckWithAddedCard
       }));  
       dispatch({ type: ADD_CARD_TO_DECK, payload: deckWithAddedCard });

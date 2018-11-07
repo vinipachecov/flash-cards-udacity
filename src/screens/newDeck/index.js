@@ -35,11 +35,11 @@ class newDeck extends Component {
     } else {      
       if (Platform.OS === 'ios') {
         Toast.show({
-          text: 'Digite um nome para o seu deck!',
+          text: 'Give a name to your new Deck!',
           position: 'top'
         });
       } else {
-        ToastAndroid.show('Digite um nome para o seu deck!', ToastAndroid.SHORT); 
+        ToastAndroid.show('Give a name to your new Deck!', ToastAndroid.SHORT); 
       }
     }     
   }

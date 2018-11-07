@@ -6,7 +6,8 @@ import {
   TouchableNativeFeedback, 
   TouchableOpacity,  
   StyleSheet,
-  TextInput
+  TextInput,
+  ToastAndroid
  } from 'react-native'
 import { connect } from 'react-redux'
 import { 
@@ -16,7 +17,9 @@ import {
   Button, 
   Left, 
   Body, 
-  Right
+  Right,
+  Toast,
+  Root
 } from 'native-base';
 import { darkBlue, white, darkGray } from '../../utils/colors';
 import { addCardToDeck } from '../../actions/deckActions';
@@ -33,16 +36,30 @@ class AddCard extends Component {
     const { selectedDeck } = this.props;
     const { questionText, answerText } = this.state;
     
-    const newQuestion = {
-      id: createguid(),
-      question: questionText,
-      answer: answerText
-    };    
-
-    const currentDeck = { ...selectedDeck };   
-    currentDeck.questions.push(newQuestion);    
-    await this.props.addCardToDeck(currentDeck);
-    this.props.navigation.goBack();
+    // Check for empty inputs
+    if (
+      questionText !== '' && questionText.trim() !== '' 
+      && answerText !== '' && answerText.trim() !== '' 
+    ) {
+      const newQuestion = {
+        id: createguid(),
+        question: questionText,
+        answer: answerText
+      };    
+  
+      const currentDeck = { ...selectedDeck };   
+      currentDeck.questions.push(newQuestion);    
+      await this.props.addCardToDeck(currentDeck);
+      this.props.navigation.goBack();
+    } else {
+      if (Platform.OS === 'ios') {
+        Toast.show({
+          text: 'Fill both inputs before creating a card.'
+        });        
+      } else {
+        ToastAndroid.show('Fill both inputs before creating a card.', ToastAndroid.SHORT)        
+      }
+    }    
   }
 
   onQuestionTextChange = (text) => {
@@ -57,6 +74,7 @@ class AddCard extends Component {
   render() {
     const { questionText, answerText } = this.state;
     return (
+      <Root>
       <Container>
         <Header 
           style={{ backgroundColor: darkBlue }}
@@ -119,6 +137,7 @@ class AddCard extends Component {
             </TouchableNativeFeedback>
           }        
       </Container>      
+      </Root>
     )
   }
 }
