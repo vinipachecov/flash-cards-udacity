@@ -10,7 +10,7 @@ export const addDeck = (deck) => {
       const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);          
         if (status === 'granted') {          
           let tomorrow = new Date();
-          tomorrow.setDate(tomorrow.getDate() + 1)
+          tomorrow.setDate(tomorrow.getDate() + 1);
           tomorrow.setHours(20)
           tomorrow.setMinutes(0)
 
@@ -40,7 +40,6 @@ export const retrieveDecks = (decks) => ({
   type: RETRIEVE_DECKS,
   payload: decks
 });  
-
    
 
 export const selectDeck = (deck) => ({
@@ -52,7 +51,7 @@ export const addCardToDeck = (deckWithAddedCard) => {
   return async dispatch => {
     console.log('deck com card adicionado = ', deckWithAddedCard)              
     try {        
-      const res = await AsyncStorage.setItem(AsyncStorageKey, JSON.stringify({
+      const res = await AsyncStorage.mergeItem(AsyncStorageKey, JSON.stringify({
         [deckWithAddedCard.id]: deckWithAddedCard
       }));  
       dispatch({ type: ADD_CARD_TO_DECK, payload: deckWithAddedCard });
