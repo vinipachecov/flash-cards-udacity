@@ -3,6 +3,9 @@ This is the last project for the Udacity React Nanodegree course(at least in my 
 ## Observations
 I did use two projects because In my setup using expo was not a good idea for the overall development, so I setup a native project with react-native-cli (i.e react init name_project) and did all through this other project. In the end as I thought it would be better to use Expo Notifications API and then I decided to merge the files to the expo project once again.
 
+## Platforms
+This project has been designed to work both on Android and IOS devices, feel free to use both.
+
 ## Running
 You will need expo cli installed in your computer if you intend to 
 run this project.
