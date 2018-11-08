@@ -24,7 +24,7 @@ module.exports = {
     "messagingSenderId": "firebase-messaging-SenderId"          
 }
 ```
-Once it is done your app is connected your new firebase backend.
+Once it is done your app is connected to your new firebase backend.
 ### PS 
 If you have problems check if you allowed authentication methods with email and created a firebase realtime database with read and write access.
 
