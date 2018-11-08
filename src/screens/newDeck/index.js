@@ -1,14 +1,24 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Platform, ToastAndroid } from 'react-native';
+import { 
+  View, 
+  Text, 
+  StyleSheet, 
+  Platform, 
+  ToastAndroid,
+  ActivityIndicator
+ } from 'react-native';
 import { connect } from 'react-redux';
 import { Item, Input, Button, Toast, Root } from 'native-base';
 import { addDeck, selectDeck } from '../../actions/deckActions';
-import { createguid } from '../../utils/helpers';
+import { createguid, sendToast } from '../../utils/helpers';
+import { addUserDeck } from '../../utils/DataHandlers/FirebaseHandlers';
+import { lightGreen } from '../../utils/colors';
 
 class newDeck extends Component {  
 
   state = {
-    deckName: ''
+    deckName: '',
+    loading: false,
   }
 
   componentDidMount() {       
@@ -21,31 +31,37 @@ class newDeck extends Component {
   createNewDeck = async () => {
     const { deckName } = this.state;
     const { navigation } = this.props;    
+    this.setState({ loading: true });
     if (deckName !== '' || deckName.trim() !== '') {
       const newDeck = {
         id: createguid(),
         title: deckName,
-        questions: []            
+        questions: [],
+        attempts: []            
       };        
       this.setState({ deckName: '' });          
-      await this.props.addDeck(newDeck);    
-      this.props.selectDeck(newDeck);
+      await this.props.addDeck(newDeck);
+      await addUserDeck(newDeck);    
+      this.props.selectDeck(newDeck);      
       console.log('depois de selecionar deck');
-      navigation.navigate('DeckHome');        
+      navigation.navigate('DeckHome');    
+      this.setState({ loading: false });    
     } else {      
       if (Platform.OS === 'ios') {
+        this.setState({ loading: false });        
         Toast.show({
           text: 'Give a name to your new Deck!',
           position: 'top'
         });
       } else {
+        this.setState({ loading: false });
         ToastAndroid.show('Give a name to your new Deck!', ToastAndroid.SHORT); 
       }
     }     
   }
 
   render() {
-    const { deckName } = this.state;
+    const { deckName, loading } = this.state;
     return (
       <Root>
       <View style={styles.container}>        
@@ -60,15 +76,24 @@ class newDeck extends Component {
             placeholder='New Deck.'              
             placeholderTextColor={'lightgray'}       
             autoCorrect={false}
+            disabled={loading}
             onSubmitEditing={this.createNewDeck}
           />
         </Item>
 
         <Button            
+          disabled={loading}
           onPress={this.createNewDeck} 
           style={styles.submitButton}>
           <Text style={{ color: 'white'}}>Submit</Text>
         </Button>        
+
+        {
+          loading ? 
+          <ActivityIndicator color={lightGreen} size={'large'} />
+          :
+          null
+        }
       </View>
     </Root>
     );

@@ -7,7 +7,7 @@ import { ActionCreators } from '../actions';
 class RootComponent extends Component {  
   render() {    
     return (
-      <AppStack/>      
+      <AppStack />      
     );
   }
 }

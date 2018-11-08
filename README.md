@@ -12,6 +12,8 @@ run this project.
 
 Open an android or ios emulator with in your computer.
 
+Install the project dependencies with  npm or yarn
+
 ## Hint
 
 For android you can check your emulators available by checking your AVD Manager in

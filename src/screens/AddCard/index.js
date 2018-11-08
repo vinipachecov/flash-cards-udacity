@@ -4,10 +4,10 @@ import {
   Text, 
   Platform, 
   TouchableNativeFeedback, 
+  ActivityIndicator,
   TouchableOpacity,  
   StyleSheet,
-  TextInput,
-  ToastAndroid
+  TextInput  
  } from 'react-native'
 import { connect } from 'react-redux'
 import { 
@@ -17,24 +17,34 @@ import {
   Button, 
   Left, 
   Body, 
-  Right,
-  Toast,
+  Right,  
   Root
 } from 'native-base';
-import { darkBlue, white, darkGray } from '../../utils/colors';
+import { darkBlue, white, darkGray, lightGreen } from '../../utils/colors';
 import { addCardToDeck } from '../../actions/deckActions';
-import { createguid } from '../../utils/helpers';
+import { createguid, sendToast } from '../../utils/helpers';
+import { addUpdatedDeck } from '../../utils/DataHandlers/FirebaseHandlers';
 
 class AddCard extends Component {
 
   state = {
     questionText: '',
-    answerText: ''
+    answerText: '',
+    loading: false
+  }
+
+  onQuestionTextChange = (text) => {
+    this.setState({ questionText: text });
+  }
+
+  onAnswerTextChange = (text) => {
+    this.setState({ answerText: text });
   }
 
   addQuestion = async () => {
     const { selectedDeck } = this.props;
     const { questionText, answerText } = this.state;
+    this.setState({ loading: true });
     
     // Check for empty inputs
     if (
@@ -50,29 +60,18 @@ class AddCard extends Component {
       const currentDeck = { ...selectedDeck };   
       currentDeck.questions.push(newQuestion);    
       await this.props.addCardToDeck(currentDeck);
+      await addUpdatedDeck(currentDeck);
       this.props.navigation.goBack();
+      this.setState({ loading: false });
     } else {
-      if (Platform.OS === 'ios') {
-        Toast.show({
-          text: 'Fill both inputs before creating a card.'
-        });        
-      } else {
-        ToastAndroid.show('Fill both inputs before creating a card.', ToastAndroid.SHORT)        
-      }
+      this.setState({ loading: false });
+      sendToast('Fill both inputs before creating a card.');      
     }    
-  }
-
-  onQuestionTextChange = (text) => {
-    this.setState({ questionText: text });
-  }
-
-  onAnswerTextChange = (text) => {
-    this.setState({ answerText: text });
   }
   
 
   render() {
-    const { questionText, answerText } = this.state;
+    const { questionText, answerText, loading } = this.state;
     return (
       <Root>
       <Container>
@@ -103,8 +102,8 @@ class AddCard extends Component {
             value={questionText}
             onChangeText={this.onQuestionTextChange}
             placeholder={'Is React-Native awesome?'}              
-            placeholderTextColor={'gray'}
-            underlineColorAndroid={darkGray}
+            placeholderTextColor={'gray'}            
+            underlineColorAndroid={darkGray}          
           />          
 
 
@@ -122,12 +121,14 @@ class AddCard extends Component {
             <TouchableOpacity  
               style={styles.iosButton}
               onPress={this.addQuestion}
-              >
+              disabled={loading}
+            >
               <Text style={{ color: darkBlue }}>Submit</Text>
             </TouchableOpacity>
             :
             <TouchableNativeFeedback
               onPress={this.addQuestion}
+              disabled={loading}
             >
               <View 
                 style={styles.androidButton}
@@ -136,6 +137,12 @@ class AddCard extends Component {
               </View>              
             </TouchableNativeFeedback>
           }        
+          {
+            loading ?
+            <ActivityIndicator color={lightGreen} size={'large'} />
+            :
+            null
+          }
       </Container>      
       </Root>
     )

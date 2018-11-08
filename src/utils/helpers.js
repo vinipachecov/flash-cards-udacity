@@ -1,5 +1,7 @@
-import { AsyncStorage } from 'react-native';
+import { AsyncStorage, ToastAndroid, Platform } from 'react-native';
+import { Toast } from 'native-base';
 import { Notifications, Permissions } from 'expo'; 
+import { AsyncStorageKey } from './keys';
 
 export const NOTIFICATION_KEY = 'flashCards:notifications';
 
@@ -34,6 +36,23 @@ export function createNotification() {
       vibrate: true
     }
   };
+}
+
+export function sendToast(text) {
+  Platform.OS === 'ios' ?      
+  Toast.show({
+    text
+  })
+  :
+  ToastAndroid.show(text, ToastAndroid.SHORT);
+}
+
+export async function setDeckData(decks) {    
+  for (const id of Object.keys(decks)) {
+    await AsyncStorage.mergeItem(AsyncStorageKey, JSON.stringify({
+      [id]: decks[id]
+    }));
+  }  
 }
 
 export function setLocalNotification() {

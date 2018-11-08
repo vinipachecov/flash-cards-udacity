@@ -37,6 +37,11 @@ class DeckHome extends Component {
     }
   }
 
+  goToDeckScores = () => {
+    const { navigation } = this.props;
+    navigation.navigate('ScoreScreen');
+  }
+
   render() {  
     const { selectedDeck } = this.props;
     console.log('DECK SELECIONADO = ', selectedDeck)
@@ -62,7 +67,15 @@ class DeckHome extends Component {
           <Body>
             <Title style={styles.titleText}>{selectedDeck.title}</Title>
           </Body>
-          <Right />
+          <Right>
+            <Button
+              transparent
+              dark
+              onPress={this.goToDeckScores}
+            >
+              <Text style={{color: white }}>Scores</Text>
+            </Button>
+          </Right>
         </Header>
         <View style={styles.headerText}>        
           <Text style={styles.selectedDeckStyle}>

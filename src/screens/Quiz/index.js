@@ -1,17 +1,19 @@
 import React, { Component } from 'react'
-import { View, Text, AsyncStorage } from 'react-native'
+import { View, Text } from 'react-native'
 import { Header, Container, Left, Icon, Right, Body, Title, Button } from 'native-base';
 import { connect } from 'react-redux';
 import { Notifications } from 'expo';
 import { darkBlue, white } from '../../utils/colors';
-import { NOTIFICATION_KEY, setLocalNotification, clearLocalNotification } from '../../utils/helpers';
+import { setLocalNotification, clearLocalNotification } from '../../utils/helpers';
+import { onUpdateDeck } from '../../actions/deckActions';
+import { addUpdatedDeck } from '../../utils/DataHandlers/FirebaseHandlers';
 
 class QuizScreen extends Component {  
 
   state = {
     type: 'question',
     correctAnswersCounter: 0,
-    questionCounter: 0
+    questionCounter: 0,    
   }
 
   /**
@@ -21,7 +23,18 @@ class QuizScreen extends Component {
     this.setState({ type });
   }
 
-  onAnswerReceived = (answer) => {    
+  onQuizzFinished = async (questionCounter, selectedDeck, correctAnswersCounter) => {    
+    if (questionCounter >= selectedDeck.questions.length) {  
+      // clear all notifications  
+      clearLocalNotification().then(setLocalNotification);
+      Notifications.cancelAllScheduledNotificationsAsync();
+      // send score data to firebase and asyncStorage
+      await this.onAddAttemptData(((correctAnswersCounter * 100) / (questionCounter)).toFixed(2));
+    }
+  }
+
+  onAnswerReceived = async (answer) => {   
+    const { selectedDeck } = this.props; 
     const { correctAnswersCounter, questionCounter } = this.state;
     switch (answer) {
       case 'CORRECT': 
@@ -30,17 +43,20 @@ class QuizScreen extends Component {
           correctAnswersCounter: correctAnswersCounter + 1,
           questionCounter: questionCounter + 1  
         });
+        this.onQuizzFinished(questionCounter + 1, selectedDeck, correctAnswersCounter + 1);
         break;
       case 'INCORRECT':
         this.setState({           
           questionCounter: questionCounter + 1  
         });
+        this.onQuizzFinished(questionCounter + 1, selectedDeck, correctAnswersCounter);
         break;
       default:
         this.setState({           
           questionCounter: questionCounter + 1  
         });        
-    }
+        this.onQuizzFinished(questionCounter + 1, selectedDeck, correctAnswersCounter);
+      }
   }
 
   onNavigateBack = () => {    
@@ -61,13 +77,36 @@ class QuizScreen extends Component {
     });
   }
 
+  onAddAttemptData = async (score) => {
+    const { selectedDeck } = this.props;
+      
+    const updatedDeck = {
+      ...selectedDeck,      
+    };  
+    if ('attempts' in updatedDeck) {  
+      console.log('tentativas anteriores = ', updatedDeck.attempts);
+        updatedDeck.attempts.unshift({          
+        date: new Date(),
+        score,          
+      });    
+    } else {
+      updatedDeck.attempts = [{
+        date: new Date(),
+        score,                  
+      }];
+    }
+    
+    console.log('deck atualizado =', updatedDeck);
+    await Promise.all([
+      this.props.onUpdateDeck(updatedDeck),
+      addUpdatedDeck(updatedDeck)
+    ]);      
+  }
+
   onRenderQuizz = () => {        
     const { selectedDeck } = this.props;
-    const { questionCounter, type } = this.state;
-    
-    console.log('DECK SELECIONADO = ', selectedDeck);
-    console.log('TAMANHO DO VETOR = ', selectedDeck.questions.length);
-    console.log('QUESTION COUNTER = ', questionCounter);
+    const { questionCounter, type, correctAnswersCounter } = this.state;
+
     if (questionCounter < selectedDeck.questions.length) {      
           return (         
       <View style={{ flex: 1 }}>
@@ -95,14 +134,14 @@ class QuizScreen extends Component {
       </View>          
       );            
     } else {      
-    //   // Finished the cards QUIZZ
-    //   // clear all notifications
-    clearLocalNotification().then(setLocalNotification);
-    Notifications.cancelAllScheduledNotificationsAsync();
-
+    //   // Finished the cards QUIZ
       return (
         <View style={styles.finishedContainer}>          
           <Text>Finished Quiz!</Text>
+
+          <Text style={{ marginVertical: 20, fontSize: 14 }}>Your answer correctly: %{
+            ((correctAnswersCounter * 100) / questionCounter).toFixed(2) 
+          } of the quizz</Text>
           <Button
             onPress={this.onRestartQuiz}
             transparent
@@ -260,6 +299,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = {  
+  onUpdateDeck
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(QuizScreen)

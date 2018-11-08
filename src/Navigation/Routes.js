@@ -1,23 +1,29 @@
 import React from 'react';
-import { createBottomTabNavigator, createStackNavigator } from 'react-navigation';
+import { createSwitchNavigator, createBottomTabNavigator, createStackNavigator } from 'react-navigation';
 import { Icon } from 'native-base';
 import DeckList from '../screens/DeckList';
 import newDeck from '../screens/newDeck';
 import DeckHome from '../screens/DeckHome';
 import AddCard from '../screens/AddCard';
 import QuizScreen from '../screens/Quiz';
+import LoginScreen from '../screens/LoginScreen';
+import RegisterScreen from '../screens/RegisterScreen';
+import ScoreScreen from '../screens/ScoreScreen';
 
 
-deckStack = createStackNavigator({  
+const deckStack = createStackNavigator({  
   DeckHome: {
     screen: DeckHome,    
-  },
+  },   
   AddCard: {
     screen: AddCard
   },
   QuizScreen: {
     screen: QuizScreen
   },
+  ScoreScreen: {
+    screen: ScoreScreen
+  },  
 },
 {
   headerMode: 'none'
@@ -53,8 +59,22 @@ const homeTab = createBottomTabNavigator({
  }
 });
 
+const loginStack = createSwitchNavigator({ 
+  LoginScreen: {
+    screen: LoginScreen
+  }, 
+  RegisterScreen: {
+    screen: RegisterScreen
+  },
+}, {
+  headerMode: 'none'
+});
 
-const AppStack = createStackNavigator({
+
+const AppStack = createStackNavigator({  
+  LoginStack: {
+    screen: loginStack
+  },
   homeTab: {
     screen: homeTab
   },

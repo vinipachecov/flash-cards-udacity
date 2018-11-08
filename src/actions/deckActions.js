@@ -36,6 +36,20 @@ export const addDeck = (deck) => {
   };
 };
 
+export const onUpdateDeck = (deck) => {
+  return async dispatch => {
+    try {                        
+      await AsyncStorage.mergeItem(AsyncStorageKey, JSON.stringify({
+        [deck.id]: deck
+      }));
+      // to update the deck on Redux
+      dispatch({ type: ADD_CARD_TO_DECK, payload: deck });
+    } catch (error) {
+      console.log(error);      
+    }              
+  };  
+}
+
 export const retrieveDecks = (decks) => ({
   type: RETRIEVE_DECKS,
   payload: decks
@@ -59,4 +73,5 @@ export const addCardToDeck = (deckWithAddedCard) => {
     }    
   };
 }
+
   

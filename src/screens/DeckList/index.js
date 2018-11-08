@@ -7,11 +7,17 @@ import {
   AsyncStorage,   
   Platform,
 } from 'react-native';
+import firebase from 'firebase';
 import { connect } from 'react-redux';
 import DeckListItem from '../../components/DeckListItem';
 import ListSeparator from '../../components/ListSeparator';
 import { retrieveDecks, selectDeck } from '../../actions/deckActions';
 import { AsyncStorageKey } from '../../utils/keys';
+
+import { Root, Container, Header, Icon, Button, Left, Title, Body, Right } from 'native-base';
+import { darkBlue, white } from '../../utils/colors';
+import { sendUserDeckData, retreiveUserData } from '../../utils/DataHandlers/FirebaseHandlers';
+import { setDeckData } from '../../utils/helpers';
 
 class DeckList extends Component {
   
@@ -28,14 +34,20 @@ class DeckList extends Component {
 
   async componentDidMount() {
     try {
-      this.setState({ loading: true });    
+      this.setState({ loading: true });          
+    const onlineData = await retreiveUserData();    
+    console.log('online data = ', onlineData);    
     // fetch all keys to get the decks    
-    // await AsyncStorage.clear()
+    // await AsyncStorage.clear();
+    await setDeckData(onlineData.decks);
     let data = await AsyncStorage.getItem(AsyncStorageKey);
     data = JSON.parse(data);
-    this.props.retrieveDecks(Object.keys(data).map(key => {      
-      return data[key];       
+    console.log('dados do ASync storage = ', data);    
+    await sendUserDeckData(data);        
+    this.props.retrieveDecks(Object.keys(onlineData.decks).map(key => {      
+      return onlineData.decks[key];       
     }));                
+    
     this.setState({ loading: false });      
     } catch (error) {      
       console.log(error);
@@ -48,30 +60,63 @@ class DeckList extends Component {
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center'}}>
         <Text>No decks available, create a new one! :)</Text>
       </View>
-    )
+    );
+  }
+
+  onSignOut = async () => {
+    await firebase.auth().signOut();
+    const { navigation } = this.props;
+    navigation.navigate('LoginStack');
+    navigation.navigate('LoginScreen');    
   }
 
   render() {    
     const { decks } = this.props;    
     console.log('dados = ', decks);
     return (      
-      <View style={styles.container}>        
-        { decks.length > 0  ?
-          <FlatList               
-            data={decks}          
-            ListSeparator={ListSeparator}
-            renderItem={({ item }) => 
-              <DeckListItem     
-                onPress={this.navigateToDeck}        
-                data={item}              
+      <Root>
+      <Container>
+        <Header 
+          androidStatusBarColor={darkBlue}
+          iosBarStyle={'light-content'}
+          style={{ backgroundColor: darkBlue }}          
+        >
+          <Left>
+            <Button
+              transparent
+              dark
+              onPress={this.onSignOut}
+            >
+              <Icon
+                name={'arrow-back'}
+                style={{ color: white }}
               />
-          }
-          keyExtractor={item => item.id}
-          />                                  
-        :
-        this.renderEmptyList()
-        }            
-      </View>
+            </Button>
+          </Left>
+          <Body>
+            <Title style={{ color: white }}>Deck List</Title>
+          </Body>
+          <Right />
+        </Header>
+        <View style={styles.container}>        
+          { decks.length > 0 ?
+            <FlatList               
+              data={decks}          
+              ListSeparator={ListSeparator}
+              renderItem={({ item }) => 
+                <DeckListItem     
+                  onPress={this.navigateToDeck}        
+                  data={item}              
+                />
+            }
+            keyExtractor={item => item.id}
+            />                                  
+          :
+          this.renderEmptyList()
+          }            
+        </View>
+        </Container>
+      </Root>
     );
   }
 }
